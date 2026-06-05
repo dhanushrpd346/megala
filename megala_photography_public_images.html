@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#C9A84C;--gl:#E8CC7A;--gd:#9C7A2A;--dk:#0F0C07;--dp:#1A1208;--cr:#F5EDD6;--w:#FFFDF7;--muted:#7A6042;--err:#e06060;--ok:#6abf69}
+body{font-family:'Lato',sans-serif;background:var(--dk);color:var(--cr);overflow-x:hidden}
+button{cursor:pointer;font-family:'Lato',sans-serif}
+.nav{position:sticky;top:0;z-index:999;display:flex;justify-content:space-between;align-items:center;padding:13px 28px;background:rgba(10,7,2,0.96);border-bottom:1px solid rgba(201,168,76,.2)}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--g);cursor:pointer}
+.nav-logo span{color:var(--cr);font-weight:400;font-style:italic}
+.nav-links{display:flex;gap:18px;list-style:none;align-items:center}
+.nav-links a{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:rgba(245,237,214,.8);cursor:pointer;transition:color .2s}
+.nav-links a:hover{color:var(--g)}
+.nav-btn{background:var(--g);color:var(--dk)!important;padding:6px 16px;border-radius:2px;font-weight:700!important}
+.nav-btn:hover{background:var(--gl)!important}
+.page{display:none}.page.active{display:block}
+.hero{height:90vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr 1fr 1fr}
+.hero-bg div{background-size:cover;background-position:center;opacity:.22;filter:sepia(.25) saturate(1.3)}
+.hero-bg div:nth-child(1){background-image:url('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80')}
+.hero-bg div:nth-child(2){background-image:url('https://images.unsplash.com/photo-1621544402532-78e3fe1a48b4?w=600&q=80')}
+.hero-bg div:nth-child(3){background-image:url('https://images.unsplash.com/photo-1610189311660-e57bcb26d60f?w=600&q=80')}
+.hero-bg div:nth-child(4){background-image:url('https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80')}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,12,7,.55),rgba(15,12,7,.18) 40%,rgba(15,12,7,.97))}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 20px;max-width:800px;animation:fiu .8s ease both}
+@keyframes fiu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.h-tag{font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--g);font-weight:700;display:block;margin-bottom:13px}
+.h-title{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,7vw,5.5rem);font-weight:900;line-height:1;color:var(--w)}
+.h-title em{display:block;font-style:italic;color:var(--g);font-weight:400;font-size:.52em;margin-top:3px}
+.h-sub{font-family:'Playfair Display',serif;font-size:clamp(.9rem,2vw,1.2rem);font-style:italic;color:rgba(245,237,214,.78);margin:18px 0 30px}
+.h-cta{display:inline-block;background:var(--g);color:var(--dk);padding:12px 38px;border-radius:2px;font-weight:700;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border:none;transition:all .3s}
+.h-cta:hover{background:var(--gl);transform:translateY(-2px)}
+.stats-band{background:var(--g);padding:18px 28px;display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--dk);line-height:1}
+.stat-l{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:rgba(26,18,8,.72);font-weight:700;margin-top:2px}
+.stat-div{width:1px;height:40px;background:rgba(26,18,8,.2)}
+.section{padding:70px 28px}
+.sec-head{text-align:center;margin-bottom:46px}
+.sec-tag{font-size:.56rem;letter-spacing:5px;text-transform:uppercase;color:var(--g);font-weight:700;display:block;margin-bottom:9px}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3.5vw,2.6rem);font-weight:900;color:var(--w);line-height:1.2}
+.sec-title em{color:var(--g);font-style:italic}
+.sec-line{width:48px;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);margin:14px auto 0}
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;max-width:1100px;margin:0 auto}
+.svc-card{position:relative;overflow:hidden;border-radius:3px;cursor:pointer;aspect-ratio:3/4;border:1px solid rgba(201,168,76,.12);transition:transform .32s,box-shadow .32s}
+.svc-card:hover{transform:translateY(-6px);box-shadow:0 20px 46px rgba(201,168,76,.2)}
+.svc-card img{width:100%;height:100%;object-fit:cover;transition:transform .45s;filter:saturate(.85)}
+.svc-card:hover img{transform:scale(1.07)}
+.svc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,7,2,.92) 0%,rgba(10,7,2,.15) 65%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:24px 20px}
+.svc-ico{font-size:1.5rem;margin-bottom:7px}
+.svc-name{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--w);margin-bottom:5px}
+.svc-bar{width:0;height:2px;background:var(--g);margin:5px 0;transition:width .32s}
+.svc-card:hover .svc-bar{width:34px}
+.svc-desc{font-size:.7rem;color:rgba(245,237,214,.7);line-height:1.7;opacity:0;transform:translateY(7px);transition:opacity .32s,transform .32s}
+.svc-card:hover .svc-desc{opacity:1;transform:translateY(0)}
+.gallery-scroll{display:flex;gap:9px;padding:0 28px;overflow-x:auto;scrollbar-width:none}
+.gallery-scroll::-webkit-scrollbar{display:none}
+.gal-item{flex-shrink:0;width:240px;height:330px;overflow:hidden;border-radius:3px;position:relative}
+.gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s,filter .4s;filter:saturate(.88)}
+.gal-item:hover img{transform:scale(1.06);filter:saturate(1.12)}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;max-width:1050px;margin:0 auto}
+.why-card{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:3px;padding:28px 20px;text-align:center;transition:background .28s,transform .28s}
+.why-card:hover{background:rgba(201,168,76,.11);transform:translateY(-3px)}
+.why-ico{font-size:1.9rem;display:block;margin-bottom:12px}
+.why-t{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--g);margin-bottom:7px;font-weight:700}
+.why-d{font-size:.7rem;color:rgba(245,237,214,.65);line-height:1.8}
+.test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;max-width:1050px;margin:0 auto}
+.test-card{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.11);border-radius:3px;padding:26px 22px;position:relative}
+.test-card::before{content:'"';position:absolute;top:-7px;left:16px;font-family:'Playfair Display',serif;font-size:4.5rem;color:var(--g);opacity:.17;line-height:1}
+.test-txt{font-family:'Playfair Display',serif;font-size:.97rem;font-style:italic;color:var(--cr);line-height:1.8;margin-bottom:16px}
+.test-auth{display:flex;align-items:center;gap:10px}
+.t-av{width:36px;height:36px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:.95rem;color:var(--dk);font-weight:700}
+.t-nm{font-weight:700;font-size:.75rem;color:var(--cr)}
+.t-lc{font-size:.62rem;color:var(--muted);margin-top:2px}
+.t-st{color:var(--g);font-size:.78rem;margin-top:2px}
+.cta-band{background:linear-gradient(135deg,var(--gd),var(--g),var(--gd));padding:64px 28px;text-align:center}
+.cta-band h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;color:var(--dk);margin-bottom:9px}
+.cta-band p{font-size:.78rem;color:rgba(15,12,7,.7);margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto;line-height:1.7}
+.cta-btn-dk{background:var(--dk);color:var(--g);padding:12px 40px;border-radius:2px;font-weight:700;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;border:none;transition:all .28s}
+.cta-btn-dk:hover{background:var(--dp);transform:translateY(-2px)}
+.contact-inner{max-width:1050px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:start}
+.cb-logo{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--g);margin-bottom:3px}
+.cb-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:rgba(245,237,214,.6);margin-bottom:22px}
+.cd{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+.cd-ico{width:34px;height:34px;border-radius:50%;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.26);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.cd-lbl{font-size:.56rem;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:2px}
+.cd-val{font-size:.82rem;color:var(--cr)}
+.cd-val a{color:var(--cr);text-decoration:none}
+.cd-val a:hover{color:var(--g)}
+.contact-map-box{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.17);border-radius:3px;overflow:hidden;aspect-ratio:4/3}
+.contact-map-box iframe{width:100%;height:100%;border:0}
+.footer-btm{max-width:1050px;margin:38px auto 0;padding-top:20px;border-top:1px solid rgba(201,168,76,.1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:.65rem;color:var(--muted)}
+.footer-btm strong{color:var(--g)}
+.booking-layout{display:grid;grid-template-columns:1fr 1fr;min-height:90vh}
+.book-left{background:linear-gradient(160deg,#1a1208,#0f0c07);padding:46px 34px;border-right:1px solid rgba(201,168,76,.13)}
+.book-right{padding:46px 34px;background:var(--dk)}
+.bl-tag{font-size:.56rem;letter-spacing:5px;text-transform:uppercase;color:var(--g);font-weight:700;margin-bottom:11px;display:block}
+.bl-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--w);line-height:1.15;margin-bottom:7px}
+.bl-title em{color:var(--g);font-style:italic}
+.bl-sub{font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(245,237,214,.62);margin-bottom:24px;line-height:1.7}
+.bl-div{width:40px;height:2px;background:linear-gradient(90deg,var(--g),transparent);margin-bottom:24px}
+.svc-list{list-style:none}
+.svc-li{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid rgba(201,168,76,.08)}
+.svc-li:last-child{border-bottom:none}
+.sli-ico{font-size:1.2rem;width:30px;text-align:center}
+.sli-nm{font-size:.76rem;font-weight:700;color:var(--cr)}
+.sli-sb{font-size:.62rem;color:var(--muted);margin-top:1px}
+.bl-contact{margin-top:24px;padding:16px;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:3px;font-size:.74rem;line-height:2;color:rgba(245,237,214,.78)}
+.bl-contact a{color:rgba(245,237,214,.78);text-decoration:none}
+.bl-contact a:hover{color:var(--g)}
+.prev-img{margin-top:20px;border-radius:3px;overflow:hidden;aspect-ratio:16/9;border:1px solid rgba(201,168,76,.16)}
+.prev-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.82)}
+.form-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--w);margin-bottom:4px}
+.form-sub{font-size:.68rem;color:var(--muted);margin-bottom:26px;line-height:1.7}
+.fg{margin-bottom:18px}
+.flbl{display:block;font-size:.56rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:6px}
+.finput,.fsel,.ftxt{width:100%;padding:11px 13px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.19);border-radius:2px;color:var(--cr);font-family:'Lato',sans-serif;font-size:.84rem;outline:none;transition:border-color .22s,background .22s}
+.finput:focus,.fsel:focus,.ftxt:focus{border-color:var(--g);background:rgba(201,168,76,.1)}
+.finput::placeholder,.ftxt::placeholder{color:rgba(245,237,214,.25)}
+.fsel option{background:#1a1208;color:var(--cr)}
+.ftxt{min-height:86px;resize:vertical}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sr-lbl{border:1px solid rgba(201,168,76,.19);border-radius:2px;padding:9px 11px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .22s}
+.sr-lbl:hover{border-color:var(--g);background:rgba(201,168,76,.08)}
+.sr-lbl.active{border-color:var(--g);background:rgba(201,168,76,.14)}
+.sr-lbl input{display:none}
+.sr-ico{font-size:1.1rem}
+.sr-txt{font-size:.7rem;font-weight:700;color:var(--cr)}
+.cal-wrap{border:1px solid rgba(201,168,76,.19);border-radius:2px;overflow:hidden;background:rgba(201,168,76,.04)}
+.cal-hdr{background:rgba(201,168,76,.1);padding:9px 13px;display:flex;justify-content:space-between;align-items:center}
+.cal-mon{font-family:'Playfair Display',serif;font-size:.9rem;font-weight:700;color:var(--g)}
+.cal-nav{background:none;border:1px solid rgba(201,168,76,.26);color:var(--g);width:26px;height:26px;border-radius:50%;font-size:.82rem;display:flex;align-items:center;justify-content:center;transition:background .18s}
+.cal-nav:hover{background:rgba(201,168,76,.14)}
+.cal-grid{padding:11px;display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dn{text-align:center;font-size:.53rem;font-weight:700;letter-spacing:1px;color:var(--g);padding:3px 0;text-transform:uppercase}
+.cal-d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.72rem;border-radius:50%;cursor:pointer;color:var(--cr);transition:all .16s}
+.cal-d:hover:not(.dis):not(.emp){background:rgba(201,168,76,.2);color:var(--g)}
+.cal-d.sel{background:var(--g);color:var(--dk);font-weight:700}
+.cal-d.tod{border:1px solid rgba(201,168,76,.36)}
+.cal-d.dis{color:rgba(245,237,214,.18);cursor:not-allowed}
+.cal-d.emp{cursor:default}
+.cal-sel{padding:8px 13px 11px;text-align:center;font-size:.7rem;color:var(--cr);border-top:1px solid rgba(201,168,76,.09)}
+.cal-sel strong{color:var(--g)}
+.err-msg{display:none;color:var(--err);font-size:.6rem;margin-top:4px}
+.finput.inv,.fsel.inv{border-color:var(--err)}
+.sub-btn{width:100%;padding:13px;background:var(--g);color:var(--dk);border:none;border-radius:2px;font-weight:700;font-size:.74rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .28s;margin-top:7px}
+.sub-btn:hover{background:var(--gl);transform:translateY(-2px)}
+.sub-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.spin{display:none;width:15px;height:15px;border:2px solid var(--dk);border-top:2px solid transparent;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.success-box{display:none;background:rgba(106,191,105,.09);border:1px solid rgba(106,191,105,.33);border-radius:3px;padding:28px 22px;text-align:center;margin-top:14px}
+.success-box .s-ico{font-size:2.4rem;margin-bottom:12px}
+.success-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--ok);margin-bottom:8px}
+.success-box p{font-size:.76rem;color:rgba(245,237,214,.75);line-height:1.8}
+.sref{margin-top:12px;padding:9px 16px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:2px;font-size:.72rem;color:var(--g);letter-spacing:1px}
+.back-link{display:inline-block;margin-top:14px;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--g);font-weight:700;cursor:pointer}
+.adm-overlay{position:fixed;inset:0;background:rgba(10,7,2,.88);z-index:9998;display:none;align-items:center;justify-content:center}
+.adm-overlay.show{display:flex}
+.adm-login-card{background:#1a1208;border:1px solid rgba(201,168,76,.3);border-radius:4px;padding:40px 36px;width:360px;max-width:94vw;animation:fiu .35s ease both;position:relative}
+.adm-login-card .lock-ico{text-align:center;font-size:2.4rem;margin-bottom:14px}
+.adm-login-card h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--g);text-align:center;margin-bottom:4px}
+.adm-login-card .adm-sub{font-size:.7rem;color:var(--muted);text-align:center;margin-bottom:26px}
+.adm-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1}
+.adm-close:hover{color:var(--cr)}
+.adm-err{display:none;background:rgba(224,96,96,.12);border:1px solid rgba(224,96,96,.3);border-radius:2px;padding:9px 13px;font-size:.72rem;color:var(--err);margin-bottom:14px;text-align:center}
+.pw-wrap{position:relative}
+.pw-wrap .finput{padding-right:40px}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:0;line-height:1}
+.pw-toggle:hover{color:var(--g)}
+.adm-login-btn{width:100%;padding:12px;background:var(--g);color:var(--dk);border:none;border-radius:2px;font-weight:700;font-size:.74rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .26s;margin-top:6px}
+.adm-login-btn:hover{background:var(--gl)}
+.adm-hint{text-align:center;margin-top:16px;font-size:.62rem;color:rgba(201,168,76,.4);letter-spacing:1px}
+.admin-panel{display:none;background:var(--dp);border-top:1px solid rgba(201,168,76,.12);padding:30px 28px 40px}
+.admin-panel.vis{display:block}
+.admin-ttl{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--g);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.adm-actions{display:flex;gap:8px;align-items:center}
+.adm-btn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.26);color:var(--g);padding:5px 13px;border-radius:2px;font-size:.62rem;letter-spacing:1px;font-family:'Lato',sans-serif;cursor:pointer}
+.adm-btn:hover{background:rgba(201,168,76,.2)}
+.clr-btn{background:rgba(224,96,96,.1);border:1px solid rgba(224,96,96,.28);color:var(--err);padding:5px 13px;border-radius:2px;font-size:.62rem;letter-spacing:1px;font-family:'Lato',sans-serif;cursor:pointer}
+.clr-btn:hover{background:rgba(224,96,96,.2)}
+.logout-btn{background:rgba(122,96,66,.15);border:1px solid rgba(122,96,66,.3);color:var(--muted);padding:5px 13px;border-radius:2px;font-size:.62rem;letter-spacing:1px;font-family:'Lato',sans-serif;cursor:pointer}
+.logout-btn:hover{background:rgba(122,96,66,.28);color:var(--cr)}
+.adm-table{width:100%;border-collapse:collapse;font-size:.7rem;table-layout:fixed}
+.adm-table th{background:rgba(201,168,76,.11);padding:8px 11px;text-align:left;font-size:.56rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);border-bottom:1px solid rgba(201,168,76,.17)}
+.adm-table td{padding:8px 11px;border-bottom:1px solid rgba(201,168,76,.07);color:rgba(245,237,214,.8);word-break:break-word}
+.adm-table tr:hover td{background:rgba(201,168,76,.04)}
+.badge-new{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.56rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(201,168,76,.17);color:var(--g);border:1px solid rgba(201,168,76,.26)}
+.adm-empty{text-align:center;padding:32px;color:var(--muted);font-size:.76rem}
+.adm-session-info{display:flex;align-items:center;gap:8px;font-size:.62rem;color:var(--muted);margin-bottom:16px}
+.adm-session-info .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block}
+.admin-trig{position:fixed;bottom:16px;right:16px;z-index:900;background:rgba(10,7,2,.88);border:1px solid rgba(201,168,76,.18);color:var(--muted);padding:6px 12px;border-radius:2px;font-size:.58rem;letter-spacing:1px;cursor:pointer;font-family:'Lato',sans-serif;transition:all .22s}
+.admin-trig:hover{color:var(--g);border-color:rgba(201,168,76,.42)}
+.admin-trig.logged-in{border-color:rgba(201,168,76,.38);color:var(--g)}
+@media(max-width:820px){.nav-links{display:none}.booking-layout{grid-template-columns:1fr}.contact-inner{grid-template-columns:1fr}.frow{grid-template-columns:1fr}.sr-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.stats-band{gap:20px}.stat-div{display:none}.sr-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ADMIN LOGIN OVERLAY -->
+<div class="adm-overlay" id="admOverlay">
+  <div class="adm-login-card">
+    <button class="adm-close" onclick="closeAdmLogin()">✕</button>
+    <div class="lock-ico">🔐</div>
+    <h2>Admin Login</h2>
+    <p class="adm-sub">Enter your credentials to access the booking dashboard</p>
+    <div class="adm-err" id="admErr">Incorrect username or password. Please try again.</div>
+    <div class="fg">
+      <label class="flbl">Username</label>
+      <input type="text" id="admUser" class="finput" placeholder="Enter username" autocomplete="off"/>
+    </div>
+    <div class="fg">
+      <label class="flbl">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="admPass" class="finput" placeholder="Enter password" autocomplete="off" onkeydown="if(event.key==='Enter')doAdmLogin()"/>
+        <button class="pw-toggle" onclick="togglePw()" id="pwToggleBtn">👁</button>
+      </div>
+    </div>
+    <button class="adm-login-btn" onclick="doAdmLogin()">🔓 Login to Admin</button>
+    <p class="adm-hint">Hint: megala / studio2025</p>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">Megala <span>Photography</span></div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')">Services</a></li>
+    <li><a onclick="showPage('home')">Gallery</a></li>
+    <li><a onclick="showPage('home')">Reviews</a></li>
+    <li><a onclick="showPage('home')">Contact</a></li>
+    <li><a onclick="showPage('booking')" class="nav-btn">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+
+  <div class="hero">
+    <div class="hero-bg"><div></div><div></div><div></div><div></div></div>
+    <div class="hero-ov"></div>
+    <div class="hero-content">
+      <span class="h-tag">✦ Melapavoor, Tenkasi, Tamil Nadu ✦</span>
+      <h1 class="h-title">Megala<em>Photography</em></h1>
+      <p class="h-sub">Capturing the soul of South Indian traditions — one timeless frame at a time</p>
+      <button class="h-cta" onclick="showPage('booking')">Book Your Session</button>
+    </div>
+  </div>
+
+  <div class="stats-band">
+    <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Weddings Covered</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Years Experience</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">1200+</div><div class="stat-l">Happy Clients</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">4.9★</div><div class="stat-l">Average Rating</div></div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="section" style="background:var(--dk)">
+    <div class="sec-head">
+      <span class="sec-tag">✦ What We Offer ✦</span>
+      <h2 class="sec-title">Our <em>Photography</em> Specialities</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card" onclick="showPage('booking')">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80" alt="Wedding Photography"/>
+        <div class="svc-ov"><div class="svc-ico">💍</div><div class="svc-name">Wedding Photography</div><div class="svc-bar"></div><div class="svc-desc">From mehendi to reception — every ritual and emotion preserved in timeless South Indian frames.</div></div>
+      </div>
+      <div class="svc-card" onclick="showPage('booking')">
+        <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80" alt="Birthday Photography"/>
+        <div class="svc-ov"><div class="svc-ico">🎂</div><div class="svc-name">Birthday Photography</div><div class="svc-bar"></div><div class="svc-desc">First birthdays, milestone celebrations — every candle-blow becomes a forever memory.</div></div>
+      </div>
+      <div class="svc-card" onclick="showPage('booking')">
+        <img src="https://images.unsplash.com/photo-1610189311660-e57bcb26d60f?w=600&q=80" alt="Traditional Photograph"/>
+        <div class="svc-ov"><div class="svc-ico">🪔</div><div class="svc-name">Traditional Photograph</div><div class="svc-bar"></div><div class="svc-desc">Seemantham, naming ceremonies, Ayushya Homam — honouring your heritage with authentic coverage.</div></div>
+      </div>
+      <div class="svc-card" onclick="showPage('booking')">
+        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80" alt="Modelling Photoshoots"/>
+        <div class="svc-ov"><div class="svc-ico">🌟</div><div class="svc-name">Modelling Photoshoots</div><div class="svc-bar"></div><div class="svc-desc">Portfolio builds, fashion editorials and personal brand sessions with pro studio setups.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="section" style="background:#0c0906;padding:56px 0 68px">
+    <div class="sec-head" style="padding:0 28px;margin-bottom:32px">
+      <span class="sec-tag">✦ Our Work ✦</span>
+      <h2 class="sec-title">A Glimpse of <em>Our</em> Stories</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="gallery-scroll">
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&q=80" alt="South Indian wedding"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1621544402532-78e3fe1a48b4?w=500&q=80" alt="Bride portrait"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1610189311660-e57bcb26d60f?w=500&q=80" alt="Traditional ceremony"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&q=80" alt="Modelling shoot"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=500&q=80" alt="Birthday celebration"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1544078751-58fee2d8a03b?w=500&q=80" alt="Birthday party"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80" alt="Wedding reception"/></div>
+      <div class="gal-item"><img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=500&q=80" alt="Portrait session"/></div>
+    </div>
+  </div>
+
+  <!-- WHY US -->
+  <div class="section" style="background:linear-gradient(135deg,#12100a,#1a1208)">
+    <div class="sec-head">
+      <span class="sec-tag">✦ Why Choose Us ✦</span>
+      <h2 class="sec-title">The <em>Megala</em> Difference</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card"><span class="why-ico">📷</span><div class="why-t">Professional Equipment</div><div class="why-d">Sony & Nikon full-frame cameras, prime lenses and professional lighting for any condition.</div></div>
+      <div class="why-card"><span class="why-ico">🎨</span><div class="why-t">Expert Editing</div><div class="why-d">Cinematic colour grading and warm South Indian tones that bring every photo to life.</div></div>
+      <div class="why-card"><span class="why-ico">⏱️</span><div class="why-t">On-Time Delivery</div><div class="why-d">Edited photos delivered within 7–10 days via cloud gallery. Albums shipped to your door.</div></div>
+      <div class="why-card"><span class="why-ico">🤝</span><div class="why-t">Personal Approach</div><div class="why-d">We invest time to understand your family and story before we press the shutter.</div></div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section" style="background:var(--dk)">
+    <div class="sec-head">
+      <span class="sec-tag">✦ Client Love ✦</span>
+      <h2 class="sec-title">What Our <em>Clients</em> Say</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="test-grid">
+      <div class="test-card"><p class="test-txt">Megala Photography captured our wedding beautifully. Every ritual and emotion was perfectly framed. We still cry happy tears looking at our album!</p><div class="test-auth"><div class="t-av">P</div><div><div class="t-nm">Priya & Karthik</div><div class="t-lc">Tirunelveli</div><div class="t-st">★★★★★</div></div></div></div>
+      <div class="test-card"><p class="test-txt">We booked them for our daughter's first birthday. The photos are cinematic. Friends can't believe it was a home setup. Highly recommend!</p><div class="test-auth"><div class="t-av">R</div><div><div class="t-nm">Rajeshwari Devi</div><div class="t-lc">Tenkasi</div><div class="t-st">★★★★★</div></div></div></div>
+      <div class="test-card"><p class="test-txt">My Seemantham photos turned out stunning. The team was respectful of every tradition and knew exactly which moments to capture. Five stars!</p><div class="test-auth"><div class="t-av">M</div><div><div class="t-nm">Meenakshi Sundaram</div><div class="t-lc">Courtallam</div><div class="t-st">★★★★★</div></div></div></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <h2>Ready to Capture Your Moment?</h2>
+    <p>Fill out a quick booking form and our team will confirm your session within 24 hours.</p>
+    <button class="cta-btn-dk" onclick="showPage('booking')">✦ Book a Session Now ✦</button>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="section" style="background:var(--dp);padding-bottom:36px">
+    <div class="sec-head">
+      <span class="sec-tag">✦ Find Us ✦</span>
+      <h2 class="sec-title">Get in <em>Touch</em></h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="contact-inner">
+      <div>
+        <div class="cb-logo">Megala Photography</div>
+        <p class="cb-sub">Preserving memories since 2016</p>
+        <div class="cd"><div class="cd-ico">📍</div><div><div class="cd-lbl">Address</div><div class="cd-val">Melapavoor, Tenkasi<br>Tamil Nadu, India</div></div></div>
+        <div class="cd"><div class="cd-ico">📞</div><div><div class="cd-lbl">Phone</div><div class="cd-val"><a href="tel:+917402228768">+91 7402228768</a></div></div></div>
+        <div class="cd"><div class="cd-ico">✉️</div><div><div class="cd-lbl">Email</div><div class="cd-val"><a href="mailto:megalastudio01@gmail.com">megalastudio01@gmail.com</a></div></div></div>
+        <div class="cd"><div class="cd-ico">🕐</div><div><div class="cd-lbl">Studio Hours</div><div class="cd-val">Mon – Sat: 9 AM – 7 PM<br>Sunday: By appointment</div></div></div>
+      </div>
+      <div class="contact-map-box">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31648!2d77.315!3d8.96!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sTenkasi%2CTamil%20Nadu!5e0!3m2!1sen!2sin!4v1680000000" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="footer-btm">
+      <div>© 2025 <strong>Megala Photography</strong> · Melapavoor, Tenkasi</div>
+      <div>Ph: <strong>7402228768</strong> · megalastudio01@gmail.com</div>
+      <div>Crafted with ♥ for South Indian Stories</div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING PAGE -->
+<div id="page-booking" class="page">
+  <div class="booking-layout">
+    <div class="book-left">
+      <span class="bl-tag">✦ Melapavoor, Tenkasi ✦</span>
+      <h2 class="bl-title">Book Your<br><em>Perfect Session</em></h2>
+      <p class="bl-sub">Fill in your details and we'll confirm within 24 hours with a personalised quote.</p>
+      <div class="bl-div"></div>
+      <ul class="svc-list">
+        <li class="svc-li"><div class="sli-ico">💍</div><div><div class="sli-nm">Wedding Photography</div><div class="sli-sb">Full day · Albums · Video</div></div></li>
+        <li class="svc-li"><div class="sli-ico">🎂</div><div><div class="sli-nm">Birthday Photography</div><div class="sli-sb">Indoor & outdoor sessions</div></div></li>
+        <li class="svc-li"><div class="sli-ico">🪔</div><div><div class="sli-nm">Traditional Photograph</div><div class="sli-sb">Ceremonies · Seemantham</div></div></li>
+        <li class="svc-li"><div class="sli-ico">🌟</div><div><div class="sli-nm">Modelling Photoshoots</div><div class="sli-sb">Portfolio · Fashion · Brand</div></div></li>
+      </ul>
+      <div class="prev-img">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&q=80" alt="South Indian wedding couple"/>
+      </div>
+      <div class="bl-contact">
+        📍 Melapavoor, Tenkasi, TN<br>
+        📞 <a href="tel:+917402228768">7402228768</a><br>
+        ✉️ <a href="mailto:megalastudio01@gmail.com">megalastudio01@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="book-right">
+      <h2 class="form-title">Your Details</h2>
+      <p class="form-sub">All fields marked * are required. We respond within 24 hours.</p>
+      <div id="formWrap">
+        <div class="fg">
+          <label class="flbl">Full Name *</label>
+          <input type="text" id="iName" class="finput" placeholder="e.g. Priya Sundaram"/>
+          <div class="err-msg" id="eNm">Please enter your full name.</div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Phone Number *</label>
+          <input type="tel" id="iPhone" class="finput" placeholder="e.g. 98765 43210" maxlength="12"/>
+          <div class="err-msg" id="ePh">Please enter a valid 10-digit number.</div>
+        </div>
+        <div class="frow">
+          <div class="fg">
+            <label class="flbl">City / Town *</label>
+            <input type="text" id="iCity" class="finput" placeholder="e.g. Tirunelveli"/>
+            <div class="err-msg" id="eCt">Please enter your city.</div>
+          </div>
+          <div class="fg">
+            <label class="flbl">Budget Range</label>
+            <select id="iPkg" class="fsel">
+              <option value="">— Select —</option>
+              <option>₹10,000 – ₹20,000</option>
+              <option>₹20,000 – ₹40,000</option>
+              <option>₹40,000 – ₹75,000</option>
+              <option>₹75,000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Session Type *</label>
+          <div class="sr-grid" id="srGroup">
+            <label class="sr-lbl"><input type="radio" name="stype" value="Wedding Photography"/><span class="sr-ico">💍</span><span class="sr-txt">Wedding Photography</span></label>
+            <label class="sr-lbl"><input type="radio" name="stype" value="Birthday Photography"/><span class="sr-ico">🎂</span><span class="sr-txt">Birthday Photography</span></label>
+            <label class="sr-lbl"><input type="radio" name="stype" value="Traditional Photograph"/><span class="sr-ico">🪔</span><span class="sr-txt">Traditional Photograph</span></label>
+            <label class="sr-lbl"><input type="radio" name="stype" value="Modelling Photoshoot"/><span class="sr-ico">🌟</span><span class="sr-txt">Modelling Photoshoot</span></label>
+          </div>
+          <div class="err-msg" id="eSvc">Please select a session type.</div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Preferred Date *</label>
+          <div class="cal-wrap">
+            <div class="cal-hdr">
+              <button class="cal-nav" id="calPrev">&#8249;</button>
+              <span class="cal-mon" id="calLbl">—</span>
+              <button class="cal-nav" id="calNext">&#8250;</button>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="cal-sel" id="calSel">No date selected</div>
+          </div>
+          <input type="hidden" id="iDate"/>
+          <div class="err-msg" id="eDt">Please choose a preferred date.</div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Additional Details</label>
+          <textarea id="iMsg" class="ftxt" placeholder="Tell us about your event — venue, number of people, special requirements…"></textarea>
+        </div>
+        <button class="sub-btn" id="subBtn" onclick="doSubmit()">
+          <span id="btnTxt">✦ Confirm Booking Request ✦</span>
+          <div class="spin" id="btnSpin"></div>
+        </button>
+      </div>
+      <div class="success-box" id="successBox">
+        <div class="s-ico">🎉</div>
+        <h3>Booking Request Received!</h3>
+        <p>Thank you! We've received your request and will contact you within 24 hours to confirm your session details and package.</p>
+        <div class="sref" id="sRef">Booking Ref: —</div><br>
+        <span class="back-link" onclick="resetAndHome()">← Back to Home</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="adm-session-info"><span class="dot"></span><span>Logged in as <strong style="color:var(--g)">Admin</strong></span></div>
+    <div class="admin-ttl">
+      <span>📋 Booking Requests <span id="bCount" style="font-size:.82rem;font-weight:400;color:var(--muted)">(0)</span></span>
+      <div class="adm-actions">
+        <button class="clr-btn" onclick="clearBkgs()">Clear All</button>
+        <button class="logout-btn" onclick="doLogout()">🔒 Logout</button>
+        <button class="adm-btn" onclick="hideAdmin()">Hide Panel</button>
+      </div>
+    </div>
+    <div id="adTblWrap"><div class="adm-empty">No bookings yet.</div></div>
+  </div>
+</div>
+
+<button class="admin-trig" id="admTrig" onclick="handleAdminClick()">⚙ Admin</button>
+
+<script>
+const ADMIN_USER='megala', ADMIN_PASS='studio2025';
+let admLoggedIn=false;
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  window.scrollTo(0,0);
+  if(p==='booking') renderCal(calYear,calMonth);
+}
+function handleAdminClick(){
+  if(admLoggedIn){
+    showPage('booking');
+    const ap=document.getElementById('adminPanel');
+    ap.classList.toggle('vis');
+    if(ap.classList.contains('vis')){refreshAdm();ap.scrollIntoView({behavior:'smooth'})}
+  } else { openAdmLogin(); }
+}
+function openAdmLogin(){
+  document.getElementById('admOverlay').classList.add('show');
+  document.getElementById('admUser').value='';
+  document.getElementById('admPass').value='';
+  document.getElementById('admErr').style.display='none';
+  setTimeout(()=>document.getElementById('admUser').focus(),120);
+}
+function closeAdmLogin(){ document.getElementById('admOverlay').classList.remove('show'); }
+function doAdmLogin(){
+  const u=document.getElementById('admUser').value.trim();
+  const p=document.getElementById('admPass').value;
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    admLoggedIn=true; closeAdmLogin();
+    document.getElementById('admTrig').classList.add('logged-in');
+    document.getElementById('admTrig').textContent='⚙ Admin ✓';
+    showPage('booking');
+    const ap=document.getElementById('adminPanel');
+    ap.classList.add('vis'); refreshAdm();
+    setTimeout(()=>ap.scrollIntoView({behavior:'smooth'}),200);
+  } else {
+    document.getElementById('admErr').style.display='block';
+    document.getElementById('admPass').value='';
+    document.getElementById('admPass').focus();
+    ['admUser','admPass'].forEach(id=>{
+      document.getElementById(id).classList.add('inv');
+      setTimeout(()=>document.getElementById(id).classList.remove('inv'),1400);
+    });
+  }
+}
+function doLogout(){
+  admLoggedIn=false;
+  document.getElementById('adminPanel').classList.remove('vis');
+  document.getElementById('admTrig').classList.remove('logged-in');
+  document.getElementById('admTrig').textContent='⚙ Admin';
+}
+function hideAdmin(){ document.getElementById('adminPanel').classList.remove('vis'); }
+function togglePw(){
+  const inp=document.getElementById('admPass'), btn=document.getElementById('pwToggleBtn');
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁':'🙈';
+}
+document.getElementById('admOverlay').addEventListener('click',function(e){ if(e.target===this) closeAdmLogin(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeAdmLogin(); });
+
+const TODAY=new Date();
+let calYear=TODAY.getFullYear(), calMonth=TODAY.getMonth(), selDate=null;
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DNS=["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+function renderCal(y,m){
+  document.getElementById('calLbl').textContent=MONTHS[m]+' '+y;
+  const g=document.getElementById('calGrid'); g.innerHTML='';
+  DNS.forEach(d=>{const e=document.createElement('div');e.className='cal-dn';e.textContent=d;g.appendChild(e)});
+  const fd=new Date(y,m,1).getDay(), dim=new Date(y,m+1,0).getDate();
+  for(let i=0;i<fd;i++){const e=document.createElement('div');e.className='cal-d emp';g.appendChild(e)}
+  for(let d=1;d<=dim;d++){
+    const e=document.createElement('div'); e.className='cal-d'; e.textContent=d;
+    const past=new Date(y,m,d)<new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate());
+    if(past){ e.classList.add('dis'); }
+    else{
+      if(d===TODAY.getDate()&&m===TODAY.getMonth()&&y===TODAY.getFullYear()) e.classList.add('tod');
+      if(selDate&&d===selDate.getDate()&&m===selDate.getMonth()&&y===selDate.getFullYear()) e.classList.add('sel');
+      e.onclick=()=>pickDay(y,m,d);
+    }
+    g.appendChild(e);
+  }
+}
+function pickDay(y,m,d){
+  selDate=new Date(y,m,d);
+  const f=DNS[selDate.getDay()]+', '+MONTHS[m]+' '+d+', '+y;
+  document.getElementById('calSel').innerHTML='Selected: <strong>'+f+'</strong>';
+  document.getElementById('iDate').value=f;
+  renderCal(y,m);
+  document.getElementById('eDt').style.display='none';
+}
+document.getElementById('calPrev').onclick=()=>{ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCal(calYear,calMonth); };
+document.getElementById('calNext').onclick=()=>{ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCal(calYear,calMonth); };
+
+document.querySelectorAll('.sr-lbl').forEach(l=>{
+  l.addEventListener('click',function(){
+    document.querySelectorAll('.sr-lbl').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('eSvc').style.display='none';
+  });
+});
+
+function showErr(eId,iId){ document.getElementById(eId).style.display='block'; if(iId) document.getElementById(iId).classList.add('inv'); }
+function clrErr(eId,iId){ document.getElementById(eId).style.display='none'; if(iId) document.getElementById(iId).classList.remove('inv'); }
+['iName','iPhone','iCity'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',()=>{
+    const m={iName:'eNm',iPhone:'ePh',iCity:'eCt'}; clrErr(m[id],id);
+  });
+});
+
+function doSubmit(){
+  const nm=document.getElementById('iName').value.trim();
+  const ph=document.getElementById('iPhone').value.trim().replace(/\s/g,'');
+  const ct=document.getElementById('iCity').value.trim();
+  const dt=document.getElementById('iDate').value.trim();
+  const sv=document.querySelector('input[name="stype"]:checked');
+  const pk=document.getElementById('iPkg').value;
+  const mg=document.getElementById('iMsg').value.trim();
+  let ok=true;
+  if(!nm){showErr('eNm','iName');ok=false;}
+  if(!ph||!/^\d{10}$/.test(ph)){showErr('ePh','iPhone');ok=false;}
+  if(!ct){showErr('eCt','iCity');ok=false;}
+  if(!dt){showErr('eDt',null);ok=false;}
+  if(!sv){showErr('eSvc',null);ok=false;}
+  if(!ok) return;
+  const btn=document.getElementById('subBtn');
+  btn.disabled=true;
+  document.getElementById('btnTxt').style.display='none';
+  document.getElementById('btnSpin').style.display='block';
+  setTimeout(()=>{
+    const bk={ref:'MP'+Date.now().toString().slice(-6),name:nm,phone:ph,city:ct,date:dt,service:sv.value,package:pk||'Not specified',message:mg||'—',status:'new',at:new Date().toLocaleString('en-IN',{timeZone:'Asia/Kolkata'})};
+    const list=JSON.parse(localStorage.getItem('mgbk')||'[]');
+    list.unshift(bk); localStorage.setItem('mgbk',JSON.stringify(list));
+    document.getElementById('formWrap').style.display='none';
+    document.getElementById('successBox').style.display='block';
+    document.getElementById('sRef').textContent='Booking Ref: '+bk.ref;
+    refreshAdm();
+  },1400);
+}
+
+function refreshAdm(){
+  const list=JSON.parse(localStorage.getItem('mgbk')||'[]');
+  document.getElementById('bCount').textContent='('+list.length+')';
+  const w=document.getElementById('adTblWrap');
+  if(!list.length){ w.innerHTML='<div class="adm-empty">No bookings yet. Submit a booking to see it here.</div>'; return; }
+  const rows=list.map(b=>`<tr><td><strong style="color:var(--g)">${b.ref}</strong></td><td>${b.name}</td><td>${b.phone}</td><td>${b.city}</td><td>${b.service}</td><td>${b.date}</td><td>${b.package}</td><td><span class="badge-new">New</span></td><td style="font-size:.58rem;color:var(--muted)">${b.at}</td></tr>`).join('');
+  w.innerHTML=`<div style="overflow-x:auto"><table class="adm-table"><thead><tr><th>Ref #</th><th>Name</th><th>Phone</th><th>City</th><th>Service</th><th>Date</th><th>Budget</th><th>Status</th><th>Submitted</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function clearBkgs(){ if(confirm('Clear all booking records? This cannot be undone.')){ localStorage.removeItem('mgbk'); refreshAdm(); } }
+
+function resetAndHome(){
+  document.getElementById('formWrap').style.display='block';
+  document.getElementById('successBox').style.display='none';
+  document.getElementById('subBtn').disabled=false;
+  document.getElementById('btnTxt').style.display='block';
+  document.getElementById('btnSpin').style.display='none';
+  ['iName','iPhone','iCity','iMsg'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('iPkg').value='';
+  document.getElementById('iDate').value='';
+  document.getElementById('calSel').textContent='No date selected';
+  selDate=null; calMonth=TODAY.getMonth(); calYear=TODAY.getFullYear();
+  document.querySelectorAll('.sr-lbl').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('input[name="stype"]').forEach(r=>r.checked=false);
+  showPage('home');
+}
+</script>
+</body>
+</html>
